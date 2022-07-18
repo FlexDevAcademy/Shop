@@ -7,5 +7,6 @@
         public string Surname { get; set; }
         public string Avatar { get; set; }
         public decimal Balance { get; set; }
+        public Address Address { get; set; }
     }
 }
