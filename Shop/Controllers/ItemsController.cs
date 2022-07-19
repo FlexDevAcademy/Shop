@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +12,26 @@ using Shop.Models;
 
 namespace Shop.Controllers
 {
+    [Authorize]
     public class ItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ItemsController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public ItemsController(ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Items
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Items.ToListAsync());
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var profile = _context.Profiles.FirstOrDefault(p => p.Email == user.Email);
+            return View(await _context.Items.Where(i => i.ProfileId == profile.Id).ToListAsync());
         }
 
         // GET: Items/Details/5
@@ -54,10 +63,13 @@ namespace Shop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Image,Description,Price,ProfileId")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,Name,Image,Description,Price")] Item item)
         {
             if (ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var profile = _context.Profiles.FirstOrDefault(p => p.Email == user.Email);
+                item.ProfileId = profile.Id;
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
