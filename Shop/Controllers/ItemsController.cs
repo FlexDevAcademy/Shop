@@ -31,6 +31,13 @@ namespace Shop.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var profile = _context.Profiles.FirstOrDefault(p => p.Email == user.Email);
+            return View(await _context.Items.Where(i => i.ProfileId != profile.Id).ToListAsync());
+        }
+
+        public async Task<IActionResult> UserItems()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var profile = _context.Profiles.FirstOrDefault(p => p.Email == user.Email);
             return View(await _context.Items.Where(i => i.ProfileId == profile.Id).ToListAsync());
         }
 
