@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,12 +20,14 @@ namespace Shop.Controllers
         private readonly ApplicationDbContext _context;
 
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         public ItemsController(ApplicationDbContext context,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Items
@@ -70,18 +74,38 @@ namespace Shop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Image,Description,Price")] Item item)
+        public async Task<IActionResult> Create([Bind("Name,Description,Price,Image")] ItemViewModel itemViewModel)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
                 var profile = _context.Profiles.FirstOrDefault(p => p.Email == user.Email);
+                
+                Item item = new Item()
+                {
+                    Name = itemViewModel.Name,
+                    Description = itemViewModel.Description,
+                    Price = itemViewModel.Price,
+                    Image = itemViewModel.Image.FileName,
+                };
                 item.ProfileId = profile.Id;
                 _context.Add(item);
+
                 await _context.SaveChangesAsync();
+                string projectRootPath = _hostingEnvironment.WebRootPath + "/Images/";
+                bool exists = System.IO.Directory.Exists(projectRootPath+item.Id.ToString());
+
+                if (!exists)
+                    System.IO.Directory.CreateDirectory(projectRootPath + item.Id.ToString());
+                var filePath = projectRootPath + $"{item.Id}/{itemViewModel.Image.FileName}";
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await itemViewModel.Image.CopyToAsync(stream);
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return View(itemViewModel);
         }
 
         // GET: Items/Edit/5
