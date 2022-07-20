@@ -118,12 +118,14 @@ namespace Shop.Areas.Identity.Pages.Account
                     };
                     _context.Addresses.Add(address);
 
+                    ShoppingBag shoppingBag = new ShoppingBag();
                     Profile profile = new Profile()
                     {
                         Name = Input.Name,
                         Surname = Input.Surname,
                         Email = Input.Email,
                         Avatar = Input.Avatar,
+                        ShoppingBag = shoppingBag,
                         Address = address,
                     };
                     _context.Profiles.Add(profile);

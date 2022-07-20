@@ -17,5 +17,7 @@ namespace Shop.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<ShoppingBag> ShoppingBag { get; set; }
+
     }
 }
