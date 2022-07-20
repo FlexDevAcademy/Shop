@@ -1,4 +1,6 @@
-﻿namespace Shop.Models
+﻿using System.Collections.Generic;
+
+namespace Shop.Models
 {
     public class Item
     {
@@ -8,5 +10,6 @@
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int ProfileId { get; set; }
+        public List<ShoppingBag> ShoppingBags { get; set; }
     }
 }
