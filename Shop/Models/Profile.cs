@@ -1,4 +1,6 @@
-﻿namespace Shop.Models
+﻿using System.Collections.Generic;
+
+namespace Shop.Models
 {
     public class Profile
     {
@@ -9,6 +11,7 @@
         public string Avatar { get; set; }
         public decimal Balance { get; set; }
         public ShoppingBag ShoppingBag { get; set; }
+        public List<Order> Orders { get; set; }
         public Address Address { get; set; }
     }
 }

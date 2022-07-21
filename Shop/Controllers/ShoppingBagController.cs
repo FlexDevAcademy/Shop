@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Shop.Data;
 using Shop.Models;
 
+
 namespace Shop.Controllers
 {
     public class ShoppingBagController : Controller
@@ -33,7 +34,7 @@ namespace Shop.Controllers
             //    .Include(p => p.ShoppingBag)
             //    .ThenInclude(s => s.Items)
             //    .FirstAsync(s => s.Id == profile.Id);
-            var userProfile = await FindUserProfileWithShoppingBag(HttpContext);
+            var userProfile = await Helpers.Helpers.FindUserProfileWithShoppingBag(HttpContext, _context, _userManager);
             
             return View(userProfile.ShoppingBag);
         }
@@ -45,7 +46,8 @@ namespace Shop.Controllers
                 return NotFound();
             }
 
-            var userProfile = await FindUserProfileWithShoppingBag(HttpContext);
+            var userProfile = await Helpers.Helpers
+                .FindUserProfileWithShoppingBag(HttpContext, _context, _userManager);
             var itemInShoppingBag = userProfile.ShoppingBag.Items.FirstOrDefault(p => p.Id == id);
 
             if(itemInShoppingBag == null) { 
@@ -66,13 +68,17 @@ namespace Shop.Controllers
                 return NotFound();
             }
 
-            var userProfile = await FindUserProfileWithShoppingBag(HttpContext);
+            var userProfile = await Helpers.Helpers
+                .FindUserProfileWithShoppingBag(HttpContext, _context, _userManager);
             var itemToAdd = _context.Items.FirstOrDefault(p => p.Id == id);
 
             if (itemToAdd == null)
             {
                 return NotFound();
             }
+
+            //if(itemToAdd.ProfileId != _context.Profiles.Include(p => p.ShoppingBag)
+            //    .ThenInclude(s => s.Items) )
 
             userProfile.ShoppingBag.Items
                 .Add(itemToAdd);
@@ -208,15 +214,6 @@ namespace Shop.Controllers
             return _context.ShoppingBag.Any(e => e.Id == id);
         }
 
-        private async Task<Profile> FindUserProfileWithShoppingBag(HttpContext httpContext)
-        {
-            var user = await _userManager.GetUserAsync(httpContext.User);
-            var profile = _context.Profiles.FirstOrDefault(p => p.Email == user.Email);
-            var userProfile = await _context.Profiles
-                .Include(p => p.ShoppingBag)
-                .ThenInclude(s => s.Items)
-                .FirstAsync(s => s.Id == profile.Id);
-            return userProfile;
-        }
+        
     }
 }
