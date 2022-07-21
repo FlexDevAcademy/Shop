@@ -38,7 +38,7 @@ namespace Shop.Controllers
             
             return View(userProfile.ShoppingBag);
         }
-
+        [HttpPost]
         public async Task<IActionResult> DeleteFromShoppingBag(int? id)
         {
             if (id == null)
