@@ -60,7 +60,19 @@ namespace Shop.Controllers
                 return NotFound();
             }
 
-            return View(item);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var profile = _context.Profiles.FirstOrDefault(p => p.Email == user.Email);
+
+            ItemDetailsViewModel itemDetailsViewModel = new ItemDetailsViewModel()
+            {
+                Id = item.Id,
+                Description = item.Description,
+                Image = item.Image,
+                Name = item.Name,
+                Price = item.Price,
+                Show = item.ProfileId != profile.Id,
+            };
+            return View(itemDetailsViewModel);
         }
 
         // GET: Items/Create

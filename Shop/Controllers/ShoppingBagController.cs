@@ -58,7 +58,7 @@ namespace Shop.Controllers
 
             return Ok();
         }
-
+        [HttpPost]
         public async Task<IActionResult> AddToShoppingBag(int? id)
         {
             if (id == null)
