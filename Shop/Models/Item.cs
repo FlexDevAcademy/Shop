@@ -10,6 +10,8 @@ namespace Shop.Models
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int ProfileId { get; set; }
+        public bool IsOrdered { get; set; }
+        public int? OrderId { get; set; }
         public List<ShoppingBag> ShoppingBags { get; set; }
     }
 }
