@@ -1,4 +1,36 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(document).ready(function () {
+    $('#Addtobag').click(function () {
+        let id = $(this).attr("data-id");
+        console.log(id)
 
-// Write your JavaScript code.
+        $(this).addClass("disabled")
+
+        $.ajax({
+            type: "POST",
+            url: "/ShoppingBag/AddToShoppingBag/" + id,
+            success: function (msg) {
+                console.log(msg);
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    })
+
+    $('.removeFromShoppingBag').click(function () {
+        let button = $(this)
+        let id = $(this).attr("data-id");
+        console.log(id)
+
+        $.ajax({
+            type: "POST",
+            url: "/ShoppingBag/DeleteFromShoppingBag/" + id,
+            success: function (msg) {
+                $(button).closest("tr").remove()
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    })
+});

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Shop.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,5 +13,12 @@ namespace Shop.Data
             : base(options)
         {
         }
+
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<ShoppingBag> ShoppingBag { get; set; }
+        public DbSet<Order> Order { get; set; }
+
     }
 }

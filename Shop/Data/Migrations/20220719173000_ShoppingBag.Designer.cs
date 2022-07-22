@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shop.Data;
 
 namespace Shop.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220719173000_ShoppingBag")]
+    partial class ShoppingBag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,14 +276,8 @@ namespace Shop.Data.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsOrdered")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -291,35 +287,7 @@ namespace Shop.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
-
                     b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("Shop.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BuyerId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("OrderValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("ProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SellerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfileId");
-
-                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("Shop.Models.Profile", b =>
@@ -442,20 +410,6 @@ namespace Shop.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Shop.Models.Item", b =>
-                {
-                    b.HasOne("Shop.Models.Order", null)
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId");
-                });
-
-            modelBuilder.Entity("Shop.Models.Order", b =>
-                {
-                    b.HasOne("Shop.Models.Profile", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("ProfileId");
-                });
-
             modelBuilder.Entity("Shop.Models.ShoppingBag", b =>
                 {
                     b.HasOne("Shop.Models.Profile", null)
@@ -465,16 +419,9 @@ namespace Shop.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Shop.Models.Order", b =>
-                {
-                    b.Navigation("Items");
-                });
-
             modelBuilder.Entity("Shop.Models.Profile", b =>
                 {
                     b.Navigation("Address");
-
-                    b.Navigation("Orders");
 
                     b.Navigation("ShoppingBag");
                 });

@@ -3,36 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shop.Data;
 
 namespace Shop.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220718170311_ProfileAddressAndItem")]
+    partial class ProfileAddressAndItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("ItemShoppingBag", b =>
-                {
-                    b.Property<int>("ItemsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShoppingBagsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ItemsId", "ShoppingBagsId");
-
-                    b.HasIndex("ShoppingBagsId");
-
-                    b.ToTable("ItemShoppingBag");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -274,14 +261,8 @@ namespace Shop.Data.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsOrdered")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -291,35 +272,7 @@ namespace Shop.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
-
                     b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("Shop.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BuyerId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("OrderValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("ProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SellerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfileId");
-
-                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("Shop.Models.Profile", b =>
@@ -335,9 +288,6 @@ namespace Shop.Data.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -347,39 +297,6 @@ namespace Shop.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Profiles");
-                });
-
-            modelBuilder.Entity("Shop.Models.ShoppingBag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfileId")
-                        .IsUnique();
-
-                    b.ToTable("ShoppingBag");
-                });
-
-            modelBuilder.Entity("ItemShoppingBag", b =>
-                {
-                    b.HasOne("Shop.Models.Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Shop.Models.ShoppingBag", null)
-                        .WithMany()
-                        .HasForeignKey("ShoppingBagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -442,41 +359,9 @@ namespace Shop.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Shop.Models.Item", b =>
-                {
-                    b.HasOne("Shop.Models.Order", null)
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId");
-                });
-
-            modelBuilder.Entity("Shop.Models.Order", b =>
-                {
-                    b.HasOne("Shop.Models.Profile", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("ProfileId");
-                });
-
-            modelBuilder.Entity("Shop.Models.ShoppingBag", b =>
-                {
-                    b.HasOne("Shop.Models.Profile", null)
-                        .WithOne("ShoppingBag")
-                        .HasForeignKey("Shop.Models.ShoppingBag", "ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Shop.Models.Order", b =>
-                {
-                    b.Navigation("Items");
-                });
-
             modelBuilder.Entity("Shop.Models.Profile", b =>
                 {
                     b.Navigation("Address");
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("ShoppingBag");
                 });
 #pragma warning restore 612, 618
         }
